@@ -1,15 +1,25 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
+
+import sys
+
+def progressBar(count_value, total, suffix=''):
+    bar_length = 100
+    filled_up_Length = int(round(bar_length* count_value / float(total)))
+    percentage = round(100.0 * count_value/float(total),1)
+    bar = '=' * filled_up_Length + '-' * (bar_length - filled_up_Length)
+    sys.stdout.write('[%s] %s%s ...%s\r' %(bar, percentage, '%', suffix))
+    sys.stdout.flush()
+
+url = input("Please type in the URL of the DBA-item and press Enter...")
+
+# The URL of the website
+#url = "https://www.dba.dk/annonce/1104546914/kvittering/?ft=eyi"
 
 # Set up the Chrome WebDriver (you need to have Chrome and ChromeDriver installed)
 driver = webdriver.Chrome()
-
-# The URL of the website
-url = "your_DBA_item"
 
 # Open the webpage
 driver.get(url)
@@ -34,9 +44,17 @@ with open("conversations.txt", "w", encoding="utf-8") as file:
         
         # Print conversation to show progress
         print(f"Conversation {idx}/{len(chat_items)}:")
+
+
+        numberOfMessages = 0
+        for message in messages:
+            message_text = message.find_element(By.CLASS_NAME, "text").text.strip()
+            if message_text != "":
+                numberOfMessages += 1
         
         # Write the conversation to the text file
         file.write(f"Conversation {idx}/{len(chat_items)}:\n")
+        i = 0
         for message in messages:
             # Extract the sender's name
             sender_name = message.find_element(By.CLASS_NAME, "username").text.strip()
@@ -48,7 +66,10 @@ with open("conversations.txt", "w", encoding="utf-8") as file:
             message_text = message.find_element(By.CLASS_NAME, "text").text.strip()
             
             # Write the message with sender's name and timestamp to the text file
-            file.write(f"{timestamp} - {sender_name}: {message_text}\n")
+            if message_text != "":
+                file.write(f"{timestamp} - {sender_name}: {message_text}\n")
+                progressBar(i,numberOfMessages,suffix='Done')
+                i += 1
         
         # Locate and click the "Tilbage til samtaler" button by its text
         back_button = driver.find_element(By.XPATH, "//span[contains(text(), 'Tilbage til samtaler')]")
@@ -57,8 +78,6 @@ with open("conversations.txt", "w", encoding="utf-8") as file:
     # Close the text file
     file.close()
 
-# Keep the browser window open until you manually close it
-input("Press Enter to close the browser...")
-
-# Close the browser
+print("Done")
+print("Closing the browser...")
 driver.quit()
