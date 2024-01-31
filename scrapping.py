@@ -53,7 +53,7 @@ with open("conversations.txt", "w", encoding="utf-8") as file:
                 numberOfMessages += 1
         
         # Write the conversation to the text file
-        file.write(f"Conversation {idx}/{len(chat_items)}:\n")
+        file.write(f"\n\n##########################\n\nConversation {idx}/{len(chat_items)}:\n")
         i = 0
         for message in messages:
             # Extract the sender's name
