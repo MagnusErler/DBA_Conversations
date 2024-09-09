@@ -13,7 +13,7 @@ def progressBar(count_value, total, suffix=''):
     sys.stdout.write('[%s] %s%s ...%s\r' %(bar, percentage, '%', suffix))
     sys.stdout.flush()
 
-url = input("Please type in the URL of the DBA-item and press Enter...")
+url = input("Please type in the URL of the DBA-item and press Enter... ")
 
 # The URL of the website
 #url = "https://www.dba.dk/annonce/1104546914/kvittering/?ft=eyi"
@@ -25,7 +25,7 @@ driver = webdriver.Chrome()
 driver.get(url)
 
 # Wait for the user to log in manually
-input("Please log in manually and press Enter when ready...")
+input("Please log in manually, accept/reject any cookies, and press Enter when ready...")
 
 # Find all the chat items
 chat_items = driver.find_elements(By.CLASS_NAME, "messaging-item-clickable")
@@ -43,7 +43,7 @@ with open("conversations.txt", "w", encoding="utf-8") as file:
         messages = driver.find_elements(By.CLASS_NAME, "message")
         
         # Print conversation to show progress
-        print(f"Conversation {idx}/{len(chat_items)}:")
+        print("Conversation {idx}/{len(chat_items)}:")
 
 
         numberOfMessages = 0
@@ -54,7 +54,7 @@ with open("conversations.txt", "w", encoding="utf-8") as file:
         
         # Write the conversation to the text file
         file.write(f"\n\n##########################\n\nConversation {idx}/{len(chat_items)}:\n")
-        i = 0
+        i = 1   # 0
         for message in messages:
             # Extract the sender's name
             sender_name = message.find_element(By.CLASS_NAME, "username").text.strip()
